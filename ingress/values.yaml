@@ -1,0 +1,8 @@
+controller:
+  stats:
+    enabled: true
+  podAnnotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "10254"
+defaultBackend:
+  enabled: false
