@@ -8,9 +8,9 @@ First you need to create an AKS cluster with the Azure dashboard. Then, you need
 
 1. Open the [Azure Portal](https://azure.microsoft.com/en-us/get-started/azure-portal), sign in, and to go [Kubernetes services](https://portal.azure.com/#view/HubsExtension/BrowseResource/resourceType/Microsoft.ContainerService%2FmanagedClusters). Here you can manage Azure Kubernetes Service (AKS) clusters.
 2. Create a new Kubernetes cluster.
-3. Choose a subscription for the cluster and a resource group. For Cluster preset configuration you can leave Dev/Test. Name the cluster and choose a region. For Kubernetes version put `1.27.7`. For Authentication and Authorization put Azure AD authentication with Kubernetes RBAC. Click next.
+3. Choose a subscription for the cluster and a resource group. For Cluster preset configuration you can leave Dev/Test. Name the cluster and choose a region. For Kubernetes version put `1.27.7`. For Authentication and Authorization put Azure AD authentication with Azure RBAC. Click next.
 4. Now we have to define node pool configuration. A node pool is basically set of VMs that run Kubernetes nodes. Click on `agentpool` and set its Node size to `B2ms` (2 CPU, 8 GB RAM). For Scale method put manual and for Node count put 1. Save the node pool.
-5.
+5. We can now jump to Review + Create and create the cluster.
 
 ## 2. Install Ingress-nginx
 
