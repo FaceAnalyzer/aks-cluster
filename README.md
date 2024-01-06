@@ -1,4 +1,4 @@
-![Kubernetes logo](https://github.com/cncf/artwork/blob/main/projects/kubernetes/icon/color/kubernetes-icon-color.png)
+<img src="https://github.com/cncf/artwork/blob/main/projects/kubernetes/icon/color/kubernetes-icon-color.png" width="50%">
 
 # AKS cluster for Faceanalyzer
 
