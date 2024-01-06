@@ -12,10 +12,10 @@ First you need to create an AKS cluster with the Azure dashboard. Then, you need
 
 1. Open the [Azure Portal](https://azure.microsoft.com/en-us/get-started/azure-portal), sign in, and to go [Kubernetes services](https://portal.azure.com/#view/HubsExtension/BrowseResource/resourceType/Microsoft.ContainerService%2FmanagedClusters). Here you can manage Azure Kubernetes Service (AKS) clusters.
 2. Create a new Kubernetes cluster.
-3. Choose a subscription for the cluster and a resource group. For Cluster preset configuration you can leave Dev/Test. Name the cluster, for example `faceanalyzer`, and choose a region. For Kubernetes version put `1.27.7`. For Authentication and Authorization put Azure AD authentication with Azure RBAC. Click next.
+3. Choose a subscription for the cluster and a resource group. For Cluster preset configuration you can leave Dev/Test. Name the cluster, for example `faceanalyzer`, and choose a region. For Kubernetes version put `1.27.7`. For Authentication and Authorization put `Azure AD authentication with Azure RBAC`. Click next.
 4. Now we have to define node pool configuration. A node pool is basically set of VMs that run Kubernetes nodes. Click on `agentpool` and set its Node size to `B2ms` (2 CPU, 8 GB RAM). For Scale method put manual and for Node count put 1. Save the node pool.
 5. We can now jump to Review + Create and create the cluster.
-6. After the cluster is created, open it in the dashboard, and add yourself to IAM. Create a new Role assignment and for Role choose `Azure Kubernetes Service RBAC Cluster Admin`.
+6. After the cluster is created, open it in the dashboard, and add yourself to IAM. Create a new role assignment and for Role choose `Azure Kubernetes Service RBAC Cluster Admin`.
 
 ## 2. Get access to the cluster
 
@@ -45,12 +45,9 @@ Cert-manager issues Let's Encrypt certificates for TLS. This enables HTTPS for o
 
 ## 5. Create the namespace
 
-Namespace for Faceanalyzer application should be created manually. Access to cluster is needed.
+Namespace for FaceAnalyzer application should be created manually.
 
 ```bash
-az login
-az aks get-credentials --resource-group faceanalyzer --name faceanalyzer
-kubelogin convert-kubeconfig
 kubectl create namespace faceanalyzer
 ```
 
@@ -58,14 +55,16 @@ kubectl create namespace faceanalyzer
 
 Service principal is a non-interactive user. Our CI/CD on backend and frontend projects needs access to the cluster so that it can deploy our app. That's why we need a service principal for CI/CD.
 
-1. Create `faceanalyzer-cicd` service principal if it doesn't exist.
-4. Add `faceanalyzer-cicd` service principal to IAM of the cluster. Choose `Azure Kubernetes Service RBAC Cluster Admin` for the role.
+1. Create `faceanalyzer-cicd` service principal if it doesn't exist. In any case, go to Azure Active Directory (Microsoft Entra ID) and then App registrations. `faceanalyzer-cicd` should be here. If it doesn't exist, just create it.
+2. Go back to the Kubernetes cluster and add `faceanalyzer-cicd` service principal to IAM. Choose `Azure Kubernetes Service RBAC Cluster Admin` for the role.
 
 ## 7. Get kubeconfig as service principal
 
-CI/CD uses kubeconfig to deploy Faceanalyzer application the cluster. This requires service principal on Azure. CI/CD uses `faceanalyzer-cicd` principal. You can find it on Azure under Enterprise applications.
+CI/CD uses kubeconfig to deploy Faceanalyzer application the cluster. This requires service principal on Azure. As already mentioned, CI/CD uses `faceanalyzer-cicd` principal.
 
-To get the principal's kubeconfig and test if it works, first get your kubeconfig and then convert it:
+Open the principal's page in App registrations to find its token. Tokens are located on Certificates & secrets page, under Client secrets. You should create a new token and save its value for the next step.
+
+To get the principal's kubeconfig and test if it works, first get the kubeconfig and then convert it with prinicipal's credentials. ID refers to Application (client) ID, secret refers to secret token you've just created.
 
 ```bash
 az aks get-credentials --resource-group faceanalyzer --name faceanalyzer
@@ -74,6 +73,8 @@ export AAD_SERVICE_PRINCIPAL_CLIENT_SECRET=seCreTStrInG
 kubelogin convert-kubeconfig -l spn
 kubectl get namespaces
 ```
+
+You should get a list of namespaces. You are now accesing the cluster as `faceanalyzer-cicd`.
 
 Then, you need to add the kubeconfig to our CI/CD service, GitHub Actions.
 
@@ -85,3 +86,5 @@ Then, you need to add the kubeconfig to our CI/CD service, GitHub Actions.
 6. Push to `develop` branch to trigger staging pipeline.
 
 Do all of the steps for frontend repo as well.
+
+Finally, delete the local kubeconfig: `rm $HOME/.kube/config`.
