@@ -15,7 +15,7 @@ First you need to create an AKS cluster with the Azure dashboard. Then, you need
 3. Choose a subscription for the cluster and a resource group. For Cluster preset configuration you can leave Dev/Test. Name the cluster, for example `faceanalyzer`, and choose a region. For Kubernetes version put `1.27.7`. For Authentication and Authorization put Azure AD authentication with Azure RBAC. Click next.
 4. Now we have to define node pool configuration. A node pool is basically set of VMs that run Kubernetes nodes. Click on `agentpool` and set its Node size to `B2ms` (2 CPU, 8 GB RAM). For Scale method put manual and for Node count put 1. Save the node pool.
 5. We can now jump to Review + Create and create the cluster.
-6. After the cluster is created, open it in the dashboard, and add yourself to IAM. Create a new Role assignment and for Role choose `Azure Kubernetes Service RBAC Cluster Admin`. Also, add `faceanalyzer-cicd` principal to IAM with the same role. This will allow you to access the cluster. The principal is used by CI/CD, i.e. CI/CD uses that user to deploy backend and frontend of Faceanalyzer to the cluster.
+6. After the cluster is created, open it in the dashboard, and add yourself to IAM. Create a new Role assignment and for Role choose `Azure Kubernetes Service RBAC Cluster Admin`.
 
 ## 2. Get access to the cluster
 
@@ -54,7 +54,14 @@ kubelogin convert-kubeconfig
 kubectl create namespace faceanalyzer
 ```
 
-## 6. Get kubeconfig as service principal
+## 6. Create service principal
+
+Service principal is a non-interactive user. Our CI/CD on backend and frontend projects needs access to the cluster so that it can deploy our app. That's why we need a service principal for CI/CD.
+
+1. Create `faceanalyzer-cicd` service principal if it doesn't exist.
+4. Add `faceanalyzer-cicd` service principal to IAM of the cluster. Choose `Azure Kubernetes Service RBAC Cluster Admin` for the role.
+
+## 7. Get kubeconfig as service principal
 
 CI/CD uses kubeconfig to deploy Faceanalyzer application the cluster. This requires service principal on Azure. CI/CD uses `faceanalyzer-cicd` principal. You can find it on Azure under Enterprise applications.
 
