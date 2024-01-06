@@ -1,4 +1,6 @@
-<img src="https://github.com/cncf/artwork/blob/main/projects/kubernetes/icon/color/kubernetes-icon-color.png" width="50%">
+<p align="center">
+    <img src="https://github.com/cncf/artwork/blob/main/projects/kubernetes/icon/color/kubernetes-icon-color.png" width="20%">
+</p>
 
 # AKS cluster for Faceanalyzer
 
