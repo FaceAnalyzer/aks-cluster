@@ -1,6 +1,8 @@
+![Kubernetes logo](https://github.com/cncf/artwork/blob/main/projects/kubernetes/icon/color/kubernetes-icon-color.png)
+
 # AKS cluster for Faceanalyzer
 
-This repo contains configuration for setting up an AKS cluster to which Faceanalyzer application can be deployed.
+This repo contains configuration for setting up an AKS cluster to which Faceanalyzer application can be deployed. AKS is a Kubernetes solution offered by Azure. FaceAnalyzer can be deployed to any Kubernetes cluster, even the bare metal.
 
 First you need to create an AKS cluster with the Azure dashboard. Then, you need to install Ingress-nginx and Cert-manager so that our app can be accesible from the public Internet. This repo is organized in IaC way and you can install the services using [Helmfile](https://github.com/helmfile/helmfile). You will also need [Kubectl](https://kubernetes.io/docs/tasks/tools/) and [Helm](https://helm.sh/docs/intro/install/).
 
